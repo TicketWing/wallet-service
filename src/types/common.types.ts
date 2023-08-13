@@ -1,0 +1,1 @@
+export type Initializable<Instance, Item> = new (arg: Item) => Instance;
