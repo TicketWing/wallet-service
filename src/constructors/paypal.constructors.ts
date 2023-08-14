@@ -1,8 +1,7 @@
-import { DepositTransaction, WithdrawAmount } from "../types/paypal.types";
+import { PaymentTransaction, WithdrawAmount } from "../types/paypal.types";
 
 export class Payment {
   readonly intent = "sale";
-  readonly transactions: DepositTransaction[];
   readonly payer = {
     payment_method: "paypal",
   };
@@ -11,7 +10,8 @@ export class Payment {
     cancel_url: "http://your-website.com/cancel",
   };
 
-  constructor(transactions: DepositTransaction[]) {
+  readonly transactions: PaymentTransaction[];
+  constructor(transactions: PaymentTransaction[]) {
     this.transactions = transactions;
   }
 }
