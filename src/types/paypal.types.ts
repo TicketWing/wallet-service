@@ -9,34 +9,6 @@ export type PayPalConnection = {
   client_secret: string;
 };
 
-// Deposit types
-
-export type PaymentItem = {
-  name: string;
-  sku: string;
-  price: string;
-  currency: string;
-  quantity: number;
-};
-
-export type PaymentTransaction = {
-  item_list: {
-    items: PaymentItem[];
-  };
-  amount: {
-    currency: string;
-    total: string;
-  };
-  description: string;
-};
-
-// Withdraw types
-
-export type WithdrawAmount = {
-  total: number;
-  currency: string;
-};
-
 export type CallbackFunction = (error: any, response: any) => void;
 
 export type ApprovalData = {
@@ -49,6 +21,3 @@ export type TransactionStates = {
   error: string[];
 };
 
-export type PaymentInstance = any;
-
-export type PayoutInstance = any;
