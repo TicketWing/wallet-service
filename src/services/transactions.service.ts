@@ -7,26 +7,42 @@ import {
   UpdateDBOptions,
 } from "ticketwing-storage-util";
 import { databasePool, redisClient } from "../connections/storage.connections";
+import { PayPalService } from "./paypal.service";
+import {
+  Deposit,
+  DepositExecute,
+  DepositTransaction,
+} from "../constructors/paypal.constructors";
+import { ApprovalData } from "../types/paypal.types";
+import { depositsQueue } from "../workers/deposit.queue";
+
+type DepositData = {
+  amount: string;
+  currency: string;
+};
 
 type TransactionData = {
   amount: string;
   description: string;
+  currency: string;
 };
 
 type TransactionStatus = "success" | "error" | "pending" | "canceled";
 
 export class TransactionService {
   private table = "transactions";
+  private paypal: PayPalService;
   private storage: CacheableStorage;
 
   constructor() {
+    this.paypal = new PayPalService();
     this.storage = new CacheableStorage(databasePool, redisClient, this.table);
   }
 
   async getDetails(id: string) {
     const dbQueries: GetDBOptions = {
       where: { id },
-      select: ["status", "amount", "description", "date"],
+      select: ["status", "amount", "currency", "description", "date"],
     };
 
     const queries = new StorageRequestBuilder<GetDBOptions, undefined>(
@@ -71,5 +87,29 @@ export class TransactionService {
     }
 
     await this.setStatus(id, "canceled");
+  }
+
+  async createDeposit(user_id: string, data: DepositData) {
+    const { amount, currency } = data;
+    const transactions = new DepositTransaction(amount, currency);
+    const deposit = new Deposit([transactions]);
+    const payment = await this.paypal.createPayment(deposit);
+    const { description } = transactions;
+    const { id } = payment;
+    const inserting = { id, user_id, amount, currency, description };
+    const dbQueries: InsertDBOptions = { returning: [] };
+    const queries = new StorageRequestBuilder<InsertDBOptions, undefined>(
+      dbQueries
+    ).build();
+    await this.storage.insert(inserting, queries);
+    depositsQueue.createJob({ id, user_id });
+    const approvalLink = this.paypal.getApprovalLink(payment);
+    return approvalLink;
+  }
+
+  async executeDeposit(data: ApprovalData) {
+    const details = await this.getDetails(data.paymentId);
+    const { amount, currency } = details;
+    await this.paypal.executePayment(data, amount, currency);
   }
 }

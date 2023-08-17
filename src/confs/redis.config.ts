@@ -3,5 +3,5 @@ export const redisConfig = {
   host: "ticket-redis",
   username: process.env.REDIS_USERNAME,
   password: process.env.REDIS_PASSWORD,
-  db: 0,
+  db: 2,
 };

@@ -8,6 +8,7 @@ export async function up(knex: Knex): Promise<void> {
         table.uuid("id").defaultTo(knex.raw("uuid_generate_v4()")).primary();
         table.string("user_id").notNullable().unique();
         table.string("amount").notNullable();
+        table.string("currency").notNullable();
         table.string("description").notNullable();
         table.string("status").notNullable().defaultTo("pending");
         table.timestamp("date").defaultTo(knex.fn.now());

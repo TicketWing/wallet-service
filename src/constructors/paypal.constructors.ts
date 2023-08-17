@@ -51,3 +51,22 @@ export class DepositDetails {
     this.state = payment.state;
   }
 }
+
+export class DepositExecute {
+  readonly payer_id: string;
+
+  readonly transactions = [
+    {
+      amount: {
+        currency: "",
+        total: "",
+      },
+    },
+  ];
+
+  constructor(total: string, currency: string, payer_id: string) {
+    this.payer_id = payer_id;
+    this.transactions[0].amount.currency = currency;
+    this.transactions[0].amount.total = total;
+  }
+}

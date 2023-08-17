@@ -9,24 +9,12 @@ import {
   UpdateDBOptions,
 } from "ticketwing-storage-util";
 import { databasePool, redisClient } from "../connections/storage.connections";
-import { PayPalUtils } from "../utils/paypal.util";
-import {
-  Deposit,
-  DepositTransaction,
-} from "../constructors/paypal.constructors";
-
-type DepositData = {
-  amount: string;
-  currency: string;
-};
 
 export class BalanceService {
   private table = "balances";
-  private paypal: PayPalUtils;
   private storage: CacheableStorage;
 
   constructor() {
-    this.paypal = new PayPalUtils();
     this.storage = new CacheableStorage(databasePool, redisClient, this.table);
   }
 
@@ -87,12 +75,7 @@ export class BalanceService {
     return difference;
   }
 
-  async topUp(user_id: string, details: DepositData) {
-    const { amount, currency } = details;
-    const transactions = new DepositTransaction(amount, currency);
-    const deposit = new Deposit([transactions]);
-    const payment = await this.paypal.createPayment(deposit);
-    const approvalLink = this.paypal.getApprovalLink(payment);
-    return approvalLink;
-  }
+  // async topUp(details: DepositData) {
+   
+  // }
 }
