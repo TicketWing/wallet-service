@@ -1,8 +1,8 @@
 import paypal from "paypal-rest-sdk";
-import { PayPalConfig } from "../confs/paypal.config";
-import { ApprovalData } from "../types/paypal.types";
-import { Deposit, DepositExecute } from "../constructors/paypal.constructors";
 import { PayPalUtils } from "../utils/paypal.utils";
+import { ApprovalData } from "../types/paypal.types";
+import { PayPalConfig } from "../confs/paypal.config";
+import { Deposit, DepositExecute } from "../constructors/paypal.constructors";
 
 export class PayPalService extends PayPalUtils {
   private api: any;

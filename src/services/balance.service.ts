@@ -9,12 +9,16 @@ import {
   UpdateDBOptions,
 } from "ticketwing-storage-util";
 import { databasePool, redisClient } from "../connections/storage.connections";
+import { DepositData } from "../types/transaction.types";
+import { TransactionService } from "./transactions.service";
 
 export class BalanceService {
   private table = "balances";
+  private transactions: TransactionService;
   private storage: CacheableStorage;
 
   constructor() {
+    this.transactions = new TransactionService();
     this.storage = new CacheableStorage(databasePool, redisClient, this.table);
   }
 
@@ -75,7 +79,8 @@ export class BalanceService {
     return difference;
   }
 
-  // async topUp(details: DepositData) {
-   
-  // }
+  async topUp(user_id: string, target: DepositData) {
+    const approvalLink = await this.transactions.createDeposit(user_id, target);
+    return approvalLink;
+  }
 }

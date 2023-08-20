@@ -1,7 +1,8 @@
-import { NextFunction, Response } from "express";
-import { ResponseConstructor } from "ticketwing-storage-util";
+import e, { NextFunction, Response } from "express";
+import { Socket } from "socket.io";
+import { ErrorConstructor, ResponseConstructor } from "ticketwing-storage-util";
 
-export const responseMiddleware =
+export const responseHTTPMiddleware =
   (cb: any) => async (req: any, res: Response, next: NextFunction) => {
     try {
       const value = await cb(req);
@@ -12,3 +13,26 @@ export const responseMiddleware =
       next(error);
     }
   };
+
+export const responseSocketMiddleware = (socket: Socket, next: any) => {
+  const originHandler = socket.emit;
+
+  socket.emit = (event: string, ...args: any[]) => {
+    let response: ResponseConstructor<any>;
+
+    const error: Error | ErrorConstructor = args.find(
+      (el: any) => el instanceof Error || el instanceof ErrorConstructor
+    );
+
+    if (error) {
+      response = new ResponseConstructor(false, `${event}: ${error.message}`);
+    } else {
+      const data = { ...args };
+      response = new ResponseConstructor(true, `${event}: Success!`, data);
+    }
+
+    return originHandler.call(socket, event, response);
+  };
+
+  next();
+};

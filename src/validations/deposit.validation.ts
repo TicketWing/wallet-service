@@ -1,6 +1,6 @@
 import Joi from "joi";
 
-const PaymentItemSchema = Joi.object({
+const DepositItemSchema = Joi.object({
   name: Joi.string().required(),
   sku: Joi.string().required(),
   price: Joi.string().required(),
@@ -8,9 +8,9 @@ const PaymentItemSchema = Joi.object({
   quantity: Joi.number().integer().required(),
 });
 
-export const PaymentTransactionSchema = Joi.object({
+export const DepositSchema = Joi.object({
   item_list: Joi.object({
-    items: Joi.array().items(PaymentItemSchema).required(),
+    items: Joi.array().items(DepositItemSchema).required(),
   }).required(),
   amount: Joi.object({
     currency: Joi.string().required(),

@@ -13,7 +13,3 @@ export type ApprovalData = {
   paymentId: string;
 };
 
-export type TransactionStates = {
-  success: string[];
-  error: string[];
-};

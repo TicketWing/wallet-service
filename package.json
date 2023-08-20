@@ -16,13 +16,15 @@
     "ioredis": "^5.3.2",
     "joi": "^17.9.2",
     "knex": "^2.5.1",
+    "passport": "^0.6.0",
     "paypal-rest-sdk": "^1.8.1",
     "pg": "^8.11.2",
     "socket.io": "^4.7.2",
-    "ticketwing-storage-util": "^1.6.8"
+    "ticketwing-storage-util": "^1.7.0"
   },
   "devDependencies": {
     "@types/express": "^4.17.17",
+    "@types/passport": "^1.0.12",
     "@types/paypal-rest-sdk": "^1.7.6",
     "@types/socket.io": "^3.0.2"
   }
