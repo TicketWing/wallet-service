@@ -1,6 +1,7 @@
 import { HandledFunction } from "../types/paypal.types";
 
 export class PayPalUtils {
+  constructor() {}
   getApprovalLink(payment: any) {
     const approvalLink = payment.links.find(
       (link: any) => link.rel === "approval_url"

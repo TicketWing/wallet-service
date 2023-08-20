@@ -5,11 +5,10 @@ import { PayPalConfig } from "../confs/paypal.config";
 import { Deposit, DepositExecute } from "../constructors/paypal.constructors";
 
 export class PayPalService extends PayPalUtils {
-  private api: any;
+  private api = paypal.configure(PayPalConfig);
 
   constructor() {
     super();
-    this.api = paypal.configure(PayPalConfig);
   }
 
   getDetails(transactionId: string) {

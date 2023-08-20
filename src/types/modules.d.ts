@@ -9,4 +9,13 @@ declare global {
   }
 }
 
+declare module "redis" {
+  interface ClientOpts {
+  }
+  interface RedisClient {
+  }
+  function createClient(...args: any[]): any;
+}
+
+
 export {};
